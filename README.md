@@ -40,7 +40,7 @@ npm install @shuami-dev/nuxt-error-status
 			(typeof error === "string" && error.includes("415")) ||
 			(error instanceof Error && error.message.includes("415"))
 		) {
-			return t("err.415")
+			return t("errStatus.415")
 		}
 
 		return null
