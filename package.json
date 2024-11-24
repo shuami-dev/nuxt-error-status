@@ -1,0 +1,52 @@
+{
+  "name": "@shuami-dev/nuxt-error-status",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "vue",
+    "nuxt",
+    "typescript",
+    "error"
+  ],
+  "author": "Ahmad Shuami <shuami.dev@gmail.com>",
+  "license": "MIT",
+  "description": "Error status handling in Nuxt 3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuami-dev/nuxt-error-status.git"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@types/node": "^22.9.1",
+    "eslint": "^9.15.0",
+    "rollup": "^4.27.3",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.6.3",
+    "vue": "^3.5.13"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.13"
+  },
+  "type": "module"
+}

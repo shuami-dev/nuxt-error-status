@@ -1,0 +1,5 @@
+src/
+rollup.config.js
+tsconfig.json
+.eslintrc.js
+.vitest.config.js
