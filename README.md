@@ -116,7 +116,7 @@ Parameters:
 - 403, 404, 415, 500, 502, 503, 504
 - ETIMEDOUT, ECONNREFUSED, EREQERROR
 
-### Default ranslation json (english)
+### Default translation json (english)
 
 Add this in your translation file
 
