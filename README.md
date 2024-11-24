@@ -24,40 +24,40 @@ npm install @shuami-dev/nuxt-error-status
 
 ```vue
 <script setup lang="ts">
-	import { errorStatus } from "@shuami-dev/nuxt-error-status"
-	import { useI18n } from "vue-i18n"
+  import { errorStatus } from "@shuami-dev/nuxt-error-status"
+  import { useI18n } from "vue-i18n"
 
-	const { t } = useI18n()
-	const error = ref<Error | string | null>(null)
+  const { t } = useI18n()
+  const error = ref<Error | string | null>(null)
 
-	/* Custom error handler (optional)
-	 * default response errors in @shuami-dev/nuxt-error-status are =>
-	 * "403", "404", "415", "500", "502", "503", "504",
-	 * "ETIMEDOUT", "ECONNREFUSED", "EREQERROR"
-	 */
-	const optErrorHandler = (error: Error | string | null) => {
-		if (
-			(typeof error === "string" && error.includes("415")) ||
-			(error instanceof Error && error.message.includes("415"))
-		) {
-			return t("errStatus.415")
-		}
+  /* Custom error handler (optional)
+   * default response errors in @shuami-dev/nuxt-error-status are =>
+   * "403", "404", "415", "500", "502", "503", "504",
+   * "ETIMEDOUT", "ECONNREFUSED", "EREQERROR"
+   */
+  const optErrorHandler = (error: Error | string | null) => {
+    if (
+      (typeof error === "string" && error.includes("415")) ||
+      (error instanceof Error && error.message.includes("415"))
+      ) {
+        return t("errStatus.415")
+      }
 
-		return null
-	}
+      return null
+    }
 
-	// Get HTTP error
-	const err = errorStatus(error, t, optErrorHandler)
+  // Get HTTP error
+  const err = errorStatus(error, t, optErrorHandler)
 
-	const fetchData = async () => {
+  const fetchData = async () => {
     const response = await $fetch("/api/your-api")
 
-		if (response.err) {
-			error.value = new Error(`${response.err}`)
-		} else {
-			result.value = response
-		}
-	}
+      if (response.err) {
+        error.value = new Error(`${response.err}`)
+      } else {
+        result.value = response
+      }
+  }
 </script>
 
 <template>
@@ -76,28 +76,28 @@ npm install @shuami-dev/nuxt-error-status
 ...
 
 export default defineEventHandler(async (e) => {
-	const params = {
-		id: "your-id",
-	}
+  const params = {
+    id: "your-id",
+  }
 
-	let data = null
-	const url = "http://your-endpoint"
+  let data = null
+  const url = "http://your-endpoint"
 
-	try {
-		const result = await axios.post(url, params)
+  try {
+    const result = await axios.post(url, params)
 
-		data = result.data
-	} catch (error: any) {
-		if (error.response) {
-			data = { err: (error as Error)?.message }
-		} else if (error.request) {
-			data = { err: "EREQERROR"}
-		} else {
-			data = { err: (error as Error)?.message }
-		}
-	}
+    data = result.data
+  } catch (error: any) {
+    if (error.response) {
+      data = { err: (error as Error)?.message }
+    } else if (error.request) {
+      data = { err: "EREQERROR"}
+    } else {
+      data = { err: (error as Error)?.message }
+    }
+  }
 
-	return data
+  return data
 })
 ```
 
@@ -107,9 +107,9 @@ export default defineEventHandler(async (e) => {
 
 Parameters:
 
-- error: Ref<Error | string | null> - The error object or message.
-- t: (key: string) => string - A translation function to map keys to messages.
-- errorHandler?: ErrorHandler - (Optional) A custom error handler function.
+- **error**: Ref<Error | string | null> - The error object or message.
+- **t**: (key: string) => string - A translation function to map keys to messages.
+- **errorHandler?**: ErrorHandler - (Optional) A custom error handler function.
 
 ### Default response errors
 
@@ -121,7 +121,7 @@ Parameters:
 Add this in your translation file
 
 ```json
-"err": {
+"errStatus": {
     "missingParameters": "An internal error occurred. Missing parameters.",
     "unexpectedError": "An unexpected error occurred. Please contact helpdesk.",
     "connectionRefused": "Unable to connect to the server. Please try again later.",
