@@ -18,7 +18,7 @@ npm install @shuami-dev/nuxt-error-status
 
 ### Usage
 
-1. Import the `errorStatus` function into your Nuxt 3 page.\
+1. Import the `errorStatus` function into your Nuxt 3 page.
 2. Use it with ref variables for error.
    Example
 
@@ -105,7 +105,7 @@ export default defineEventHandler(async (e) => {
 
 `errorStatus` returns a computed value based on the error.
 
-Parameters:\
+Parameters:
 
 - error: Ref<Error | string | null> - The error object or message.
 - t: (key: string) => string - A translation function to map keys to messages.
