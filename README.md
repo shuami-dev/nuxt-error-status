@@ -24,52 +24,50 @@ npm install @shuami-dev/nuxt-error-status
 
 ```vue
 <script setup lang="ts">
-  import { errorStatus } from "@shuami-dev/nuxt-error-status"
-  import { useI18n } from "vue-i18n"
+	import { errorStatus } from "@shuami-dev/nuxt-error-status"
+	import { useI18n } from "vue-i18n"
 
-  const { t } = useI18n()
-  const error = ref<Error | string | null>(null)
+	const { t } = useI18n()
+	const error = ref<Error | string | null | undefined>(null)
 
-  /* Custom error handler (optional)
-   * default response errors in @shuami-dev/nuxt-error-status are =>
-   * "403", "404", "415", "500", "502", "503", "504",
-   * "ETIMEDOUT", "ECONNREFUSED", "EREQERROR"
-   */
-  const optErrorHandler = (error: Error | string | null) => {
-    if (
-      (typeof error === "string" && error.includes("415")) ||
-      (error instanceof Error && error.message.includes("415"))
-      ) {
-        return t("errStatus.415")
-      }
+	// Custom error handler (optional)
+	const optErrorHandler = (error: Error | string | null | undefined) => {
+		if (
+			(typeof error === "string" && error.includes("415")) ||
+			(error instanceof Error && error.message.includes("415"))
+		) {
+			return t("errStatus.415")
+		}
 
-      return null
-    }
+		return null
+	}
 
-  // Get HTTP error
-  const err = errorStatus(error, t, optErrorHandler)
+	// Get HTTP error
+	const err = errorStatus(error, t, optErrorHandler)
 
-  const fetchData = async () => {
-    const response = await $fetch("/api/your-api")
+	const fetchData = async () => {
+		const response = await $fetch("/api/your-api")
 
-      if (response.err) {
-        error.value = new Error(`${response.err}`)
-      } else {
-        result.value = response
-      }
-  }
+		if (!response || response.err) {
+			error.value = response.err
+					? new Error(`${response.err}`)
+					: undefined
+		} else {
+			result.value = response
+		}
+	}
 </script>
 
 <template>
-  <div>
-    <button @click="fetchData">Fetch Data</button>
-    <p v-if="err">{{ err }}</p>
-    <p v-else>{{ result }}</p>
-  </div>
+	<div>
+		<button @click="fetchData">Fetch Data</button>
+		<p v-if="err">{{ err }}</p>
+		<p v-else>{{ result }}</p>
+	</div>
 </template>
 ```
 
-   In your server/api/your_post.ts
+In your server/api/your_post.ts
 
 ```ts
 ...
@@ -88,13 +86,17 @@ export default defineEventHandler(async (e) => {
 
     data = result.data
   } catch (error: any) {
-    if (error.response) {
-      data = { err: (error as Error)?.message }
-    } else if (error.request) {
-      data = { err: "EREQERROR"}
-    } else {
-      data = { err: (error as Error)?.message }
-    }
+    if (!error.response) {
+			data = { err: "NORESPONSE" }
+		} else if (error.response) {
+			data = { err: error.response.status }
+		} else if (error.request) {
+			data = { err: error.response.request }
+		} else if (error.code) {
+			data = { err: error.code }
+		} else {
+			data = { err: (error as Error)?.message }
+		}
   }
 
   return data
@@ -107,14 +109,14 @@ export default defineEventHandler(async (e) => {
 
 Parameters:
 
-- **error**: Ref<Error | string | null> - The error object or message.
+- **error**: Ref<Error | string | null | undefined> - The error object or message.
 - **t**: (key: string) => string - A translation function to map keys to messages.
 - **errorHandler?**: ErrorHandler - (Optional) A custom error handler function.
 
 ### Default response errors
 
-- 403, 404, 415, 500, 502, 503, 504
-- ETIMEDOUT, ECONNREFUSED, EREQERROR
+- 400, 401, 403, 404, 429, 500, 502, 503, 504
+- NORESPONSE, ETIMEDOUT, ECONNREFUSED, EREQERROR, ECONNABORTED, ENOTFOUND
 
 ### Default translation json (english)
 
@@ -122,18 +124,24 @@ Add this in your translation file
 
 ```json
 "errStatus": {
-    "missingParameters": "An internal error occurred. Missing parameters.",
-    "unexpectedError": "An unexpected error occurred. Please contact helpdesk.",
-    "connectionRefused": "Unable to connect to the server. Please try again later.",
-    "connectionTimedOut": "Failed to process request in time. Please try again later.",
-    "requestErr": "No response received from server. Please try again later.",
-    "defaultStatusError": "An error occurred while fetching data.",
-    "403": "You are not authorized to access this application.",
-    "404": "The requested resource was not found.",
-    "415": "The server refused to accept the request because the message content format is not supported.",
-    "500": "Internal server error. Please try again later.",
-    "502": "The server was unable to complete your request. Please try again later.",
-    "503": "Service unavailable. Please try again later.",
-    "504": "The server did not respond in time. Please try again later."
-  }
+  "missingParameters": "An internal error occurred. Missing parameters.",
+  "unexpectedError": "An unexpected error occurred. Please contact helpdesk.",
+  "connectionRefused": "Unable to connect to the server. Please try again later.",
+  "connectionTimedOut": "Failed to process request in time. Please try again later.",
+  "requestErr": "No response received from server. Please try again later.",
+  "noResponse": "No response received from the server.",
+  "connAbort": "Request time out. Please try again later.",
+  "notFound": "Network error. Server not found.",
+  "defaultStatusError": "An error occurred while fetching data.",
+  "400": "Bad Request: The server could not understand the request due to invalid syntax.",
+  "401": "Unauthorized: Authentication is required and has failed or not been provided.",
+  "403": "You are not authorized to access this application.",
+  "404": "The requested resource was not found.",
+  "415": "The server refused to accept the request because the message content format is not supported.",
+  "429": "Too Many Requests: The user has sent too many requests in a given time.",
+  "500": "Internal server error. Please try again later.",
+  "502": "The server was unable to complete your request. Please try again later.",
+  "503": "Service unavailable. Please try again later.",
+  "504": "The server did not respond in time. Please try again later."
+}
 ```
