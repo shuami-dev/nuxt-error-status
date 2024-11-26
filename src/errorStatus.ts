@@ -29,49 +29,51 @@ export function errorStatus(
 
 			// Handle specific error cases
 			if (error) {
+				// if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("NORESPONSE")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("NORESPONSE"))
+				// ) {
+				// 	return t("errStatus.noResponse")
+				// } else if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("ETIMEDOUT")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("ETIMEDOUT"))
+				// ) {
+				// 	return t("errStatus.connectionTimedOut")
+				// } else if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("ECONNREFUSED")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("ECONNREFUSED"))
+				// ) {
+				// 	return t("errStatus.connectionRefused")
+				// } else if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("EREQERROR")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("EREQERROR"))
+				// ) {
+				// 	return t("errStatus.requestErr")
+				// } else if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("ECONNABORTED")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("ECONNABORTED"))
+				// ) {
+				// 	return t("errStatus.connAbort")
+				// } else if (
+				// 	(typeof error.value === "string" &&
+				// 		error.value.includes("ENOTFOUND")) ||
+				// 	(error.value instanceof Error &&
+				// 		error.value.message.includes("ENOTFOUND"))
+				// ) {
+				// 	return t("errStatus.notFound")
+				// } else 
+				
 				if (
-					(typeof error.value === "string" &&
-						error.value.includes("NORESPONSE")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("NORESPONSE"))
-				) {
-					return t("errStatus.noResponse")
-				} else if (
-					(typeof error.value === "string" &&
-						error.value.includes("ETIMEDOUT")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("ETIMEDOUT"))
-				) {
-					return t("errStatus.connectionTimedOut")
-				} else if (
-					(typeof error.value === "string" &&
-						error.value.includes("ECONNREFUSED")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("ECONNREFUSED"))
-				) {
-					return t("errStatus.connectionRefused")
-				} else if (
-					(typeof error.value === "string" &&
-						error.value.includes("EREQERROR")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("EREQERROR"))
-				) {
-					return t("errStatus.requestErr")
-				} else if (
-					(typeof error.value === "string" &&
-						error.value.includes("ECONNABORTED")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("ECONNABORTED"))
-				) {
-					return t("errStatus.connAbort")
-				} else if (
-					(typeof error.value === "string" &&
-						error.value.includes("ENOTFOUND")) ||
-					(error.value instanceof Error &&
-						error.value.message.includes("ENOTFOUND"))
-				) {
-					return t("errStatus.notFound")
-				} else if (
 					(typeof error.value === "string" && error.value.includes("400")) ||
 					(error.value instanceof Error && error.value.message.includes("400"))
 				) {
