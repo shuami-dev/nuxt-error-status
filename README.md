@@ -4,7 +4,7 @@ A utility package to handle and display error statuses seamlessly in Nuxt 3 appl
 
 ### Features
 
-- Handles common HTTP error statuses like 403, 404, and network errors.
+- Handles common HTTP error statuses like 403, 404 etc.
 - Supports custom error handling through a `optErrorHandler` function.
 - Fully typed with TypeScript for better developer experience.
 
@@ -21,6 +21,8 @@ npm install @shuami-dev/nuxt-error-status
 1. Import the `errorStatus` function into your Nuxt 3 page.
 2. Use it with ref variables for error.
    Example
+
+In your pages/index.vue
 
 ```vue
 <script setup lang="ts">
@@ -49,9 +51,7 @@ npm install @shuami-dev/nuxt-error-status
 		const response = await $fetch("/api/your-api")
 
 		if (!response || response.err) {
-			error.value = response.err
-					? new Error(`${response.err}`)
-					: undefined
+			error.value = response.err ? new Error(`${response.err}`) : undefined
 		} else {
 			result.value = response
 		}
@@ -82,25 +82,48 @@ export default defineEventHandler(async (e) => {
   const url = "http://your-endpoint"
 
   try {
-    const result = await axios.post(url, params)
+    const res = await axios.post(url, params)
 
-    data = result.data
+    data = res.data
   } catch (error: any) {
-    if (!error.response) {
-			data = { err: "NORESPONSE" }
-		} else if (error.response) {
+    if (error?.response) {
 			data = { err: error.response.status }
-		} else if (error.request) {
-			data = { err: error.response.request }
-		} else if (error.code) {
-			data = { err: error.code }
+		} else if (error?.request) {
+			data = { err: 503 }
 		} else {
-			data = { err: (error as Error)?.message }
+			data = { err: 500 }
 		}
   }
 
   return data
 })
+```
+
+3. Make sure you handle error in your api (e.g: using fastify) like this.
+
+In your routes/your-folder/index.ts
+
+```ts
+...
+...
+
+try {
+	// your-api-call
+} catch (error: any) {
+	if (error.response) {
+		reply.status(error.response.status).send({
+			result: error.response.data?.message || "External service error.",
+		})
+	} else if (error.request) {
+		reply.status(503).send({
+			result: "External service unavailable.",
+		})
+	} else {
+		reply.status(500).send({
+			result: "An internal server error occurred.",
+		})
+	}
+}
 ```
 
 ### Api Reference
@@ -116,7 +139,6 @@ Parameters:
 ### Default response errors
 
 - 400, 401, 403, 404, 429, 500, 502, 503, 504
-- NORESPONSE, ETIMEDOUT, ECONNREFUSED, EREQERROR, ECONNABORTED, ENOTFOUND
 
 ### Default translation json (english)
 
@@ -126,13 +148,6 @@ Add this in your translation file
 "errStatus": {
   "missingParameters": "An internal error occurred. Missing parameters.",
   "unexpectedError": "An unexpected error occurred. Please contact helpdesk.",
-  "connectionRefused": "Unable to connect to the server. Please try again later.",
-  "connectionTimedOut": "Failed to process request in time. Please try again later.",
-  "requestErr": "No response received from server. Please try again later.",
-  "noResponse": "No response received from the server.",
-  "connAbort": "Request time out. Please try again later.",
-  "notFound": "Network error. Server not found.",
-  "defaultStatusError": "An error occurred while fetching data.",
   "400": "Bad Request: The server could not understand the request due to invalid syntax.",
   "401": "Unauthorized: Authentication is required and has failed or not been provided.",
   "403": "You are not authorized to access this application.",
