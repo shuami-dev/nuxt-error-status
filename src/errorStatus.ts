@@ -71,9 +71,21 @@ export function errorStatus(
 				// 		error.value.message.includes("ENOTFOUND"))
 				// ) {
 				// 	return t("errStatus.notFound")
-				// } else 
-				
+				// } else
+
 				if (
+					(typeof error.value === "string" &&
+						error.value.includes("aborted")) ||
+					(error.value instanceof Error &&
+						error.value.message.includes("aborted"))
+				) {
+					return t("errStatus.abortError")
+				} else if (
+					(typeof error.value === "string" && error.value.includes("invalidNonce")) ||
+					(error.value instanceof Error && error.value.message.includes("invalidNonce"))
+				) {
+					return t("errStatus.invalidNonce")
+				} else if (
 					(typeof error.value === "string" && error.value.includes("400")) ||
 					(error.value instanceof Error && error.value.message.includes("400"))
 				) {
